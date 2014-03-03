@@ -1,11 +1,13 @@
 pivotjs:
-  jshead:
-    - <link rel="stylesheet" href="./lib/css/bootstrap.min.css" type="text/css" />
-    - <link rel="stylesheet" href="./lib/css/subnav.css" type="text/css" />
-    - <link rel="stylesheet" href="./lib/css/pivot.css" type="text/css" />
   css:
-    - <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    - <script type="text/javascript" src="./lib/javascripts/subnav.js"></script>
-    - <script type="text/javascript" src="./lib/javascripts/accounting.min.js"></script>
-    - <script type="text/javascript" src="./lib/javascripts/jquery.dataTables.min.js"></script>
-    - <script type="text/javascript" src="./lib/javascripts/dataTables.bootstrap.js"></script>
+    - ./lib/css/bootstrap.min.css
+    - ./lib/css/subnav.css
+    - ./lib/css/pivot.css
+  jshead:
+    - ./lib/js/jquery.min.js
+    - ./lib/js/subnav.js
+    - ./lib/js/accounting.min.js
+    - ./lib/js/jquery.dataTables.min.js
+    - ./lib/js/dataTables.bootstrap.js
+    - ./lib/js/pivot.js
+    - ./lib/js/jquery_pivot.js
