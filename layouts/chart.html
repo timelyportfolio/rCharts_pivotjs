@@ -42,11 +42,11 @@
             Canned Reports
             <b class="caret"></b>
           </a>
-          <ul class="dropdown-menu">
+          <!--ul class="dropdown-menu">
            <li><a id="ar-aged-balance" href="#">AR Aged Balance</a></li>
            <li><a id="acme-detail-report" href="#">Acme Corp Detail</a></li>
            <li><a id="miami-invoice-detail" href="#">Miami Invoice Detail</a></li>
-          </ul>
+          </ul-->
         </li>
       </ul>
     </div>
@@ -100,13 +100,23 @@ params.data[Object.keys(params.data)[0]].forEach(function(d,i){
   };
 
   $(document).ready(function() {
-
-    setupPivot({json:pivotData, fields: JSONfn.parse(params.fields)})//, filters: {employer: 'Acme Corp'}, rowLabels:["city"], summaries:["billed_amount", "payment_amount"]})
+    pivotParams = {};
+    pivotParams.json = pivotData;
+    ["fields","filters","rowLabels","summaries"].forEach(function(d){
+      if( typeof params[d] != "object" ) { params[d] = [params[d]] }   
+      if(params[d]) { pivotParams[d] = params[d] }
+    })
+    
+    
+    setupPivot(pivotParams) // original for reference {json:pivotData, fields: params.fields, filters: {employer: 'Acme Corp'}, rowLabels:["city"], summaries:["billed_amount", "payment_amount"]})
 
     // prevent dropdown from closing after selection
     $('.stop-propagation').click(function(event){
       event.stopPropagation();
     });
+
+    /* this is in the pivot.js demo
+    would like to support but not sure how
 
     // **Sexy** In your console type pivot.config() to view your current internal structure (the full initialize object).  Pass it to setup and you have a canned report.
     $('#ar-aged-balance').click(function(event){
@@ -119,6 +129,6 @@ params.data[Object.keys(params.data)[0]].forEach(function(d,i){
 
     $('#miami-invoice-detail').click(function(event){
       $('#pivot-demo').pivot_display('reprocess_display', {"filters":{"city":"Miami"},"rowLabels":["last_name","first_name","employer","invoice_date"],"summaries":["payment_amount"]})
-    });
+    }); */
   });
 </script>
