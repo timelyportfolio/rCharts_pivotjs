@@ -11,3 +11,4 @@ pivotjs:
     - ./lib/js/dataTables.bootstrap.js
     - ./lib/js/pivot.js
     - ./lib/js/jquery_pivot.js
+    - ./lib/js/jsonfn.js

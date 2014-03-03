@@ -62,57 +62,27 @@
 
 <script type="text/javascript">
 
-function ageBucket(row, field){
-  var age = Math.abs(((new Date().getTime()) - row[field.dataSource])/1000/60/60/24);
-  switch (true){
-    case (age < 31):
-      return '000 - 030'
-    case (age < 61):
-      return '031 - 060'
-    case (age < 91):
-      return '061 - 090'
-    case (age < 121):
-      return '091 - 120'
-    default:
-      return '121+'
-  }
-};
+var params = {{{ chartParams }}}
+//don't separate data from params for now data = {{{ data }}},
+
+//do the data transform expected by pivot.js
+//need an array of arrays
+//with first array the column headings
+//then each additional array the row
+var pivotData = [];
+//get column headings
+pivotData.push(Object.keys(params.data));
+params.data[Object.keys(params.data)[0]].forEach(function(d,i){
+  var temparray = [];
+  Object.keys(params.data).forEach(function(key){
+    temparray.push(params.data[key][i]);
+  })
+  pivotData.push(temparray);
+})
+
 
 // Define the structure of fields, if this is not defined then all fields will be assumed
 // to be strings.  Name must match csv header row (which must exist) in order to parse correctly.
-var fields = [
-    // filterable fields
-    {name: 'last_name',         type: 'string', filterable: true, filterType: 'regexp'},
-    {name: 'first_name',        type: 'string', filterable: true},
-    {name: 'state',             type: 'string', filterable: true},
-    {name: 'employer',          type: 'string', filterable: true},
-    {name: 'city',              type: 'string', filterable: true},
-    {name: 'invoice_date',      type: 'date',   filterable: true},
-
-    // psuedo fields
-    {name: 'invoice_mm', type: 'string', filterable: true, pseudo: true,
-      pseudoFunction: function(row){
-          var date = new Date(row.invoice_date);
-          return pivot.utils().padLeft((date.getMonth() + 1),2,'0')}
-    },
-    {name: 'invoice_yyyy_mm', type: 'string', filterable: true, pseudo: true,
-      pseudoFunction: function(row){
-        var date = new Date(row.invoice_date);
-        return date.getFullYear() + '_' + pivot.utils().padLeft((date.getMonth() + 1),2,'0')}
-    },
-    {name: 'invoice_yyyy', type: 'string', filterable: true, pseudo: true, columnLabelable: true,
-      pseudoFunction: function(row){ return new Date(row.invoice_date).getFullYear() }},
-    {name: 'age_bucket', type: 'string', filterable: true, columnLabelable: true, pseudo: true, dataSource: 'last_payment_date', pseudoFunction: ageBucket},
-
-
-    // summary fields
-    {name: 'billed_amount',     type: 'float',  rowLabelable: false, summarizable: 'sum', displayFunction: function(value){ return accounting.formatMoney(value)}},
-    {name: 'payment_amount',    type: 'float',  rowLabelable: false, summarizable: 'sum', displayFunction: function(value){ return accounting.formatMoney(value)}},
-    {name: 'balance', type: 'float', rowLabelable: false, pseudo: true,
-      pseudoFunction: function(row){ return row.billed_amount - row.payment_amount },
-      summarizable: 'sum', displayFunction: function(value){ return accounting.formatMoney(value)}},
-    {name: 'last_payment_date',  type: 'date',  filterable: true}
-]
 
   function setupPivot(input){
     input.callbacks = {afterUpdateResults: function(){
@@ -131,7 +101,7 @@ var fields = [
 
   $(document).ready(function() {
 
-    setupPivot({url:'./lib/csv/demo.csv', fields: fields, filters: {employer: 'Acme Corp'}, rowLabels:["city"], summaries:["billed_amount", "payment_amount"]})
+    setupPivot({json:pivotData, fields: JSONfn.parse(params.fields)})//, filters: {employer: 'Acme Corp'}, rowLabels:["city"], summaries:["billed_amount", "payment_amount"]})
 
     // prevent dropdown from closing after selection
     $('.stop-propagation').click(function(event){
